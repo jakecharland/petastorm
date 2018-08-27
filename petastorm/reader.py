@@ -15,9 +15,9 @@
 import collections
 import logging
 import os
-import six
 import warnings
 
+import six
 from pyarrow import parquet as pq
 
 from petastorm import PredicateBase, RowGroupSelectorBase
@@ -156,6 +156,9 @@ class Reader(object):
                                  ventilator=ventilator)
         self._read_timeout_s = read_timeout_s
 
+        self._result_buffer = None
+        self._result_index = 0
+
     def _filter_row_groups(self, dataset, row_groups, predicate, rowgroup_selector, training_partition,
                            num_training_partitions):
         """Calculates which rowgroups will be read during.
@@ -293,7 +296,38 @@ class Reader(object):
 
     def __next__(self):
         try:
-            return self._workers_pool.get_results(timeout=self._read_timeout_s)
+            if not self._result_buffer:
+                rows_as_dict = self._workers_pool.get_results(timeout=self._read_timeout_s)
+
+                if self.ngram:
+                    for ngram_row in rows_as_dict:
+                        for timestamp in ngram_row.keys():
+                            row = ngram_row[timestamp]
+                            schema_at_timestamp = self.ngram.get_schema_at_timestep(self.schema, timestamp)
+                            # decimal_field_names = [f[0] for f in schema_at_timestamp.fields.items() if
+                            #                        f[1].numpy_dtype == decimal.Decimal]
+                            # for decimal_field in decimal_field_names:
+                            #     row[decimal_field] = decimal.Decimal(row[decimal_field])
+
+                            ngram_row[timestamp] = schema_at_timestamp.make_namedtuple(**row)
+                    self._result_buffer = rows_as_dict
+                else:
+                    # decimal_field_names = [f[0] for f in self.schema.fields.items() if
+                    #                        f[1].numpy_dtype == decimal.Decimal]
+                    # for row in rows_as_dict:
+                    #     for decimal_field in decimal_field_names:
+                    #         row[decimal_field] = decimal.Decimal(row[decimal_field])
+
+                    self._result_buffer = [self.schema.make_namedtuple(**row) for row in rows_as_dict]
+                    self._result_index = 0
+
+            result_row = self._result_buffer[self._result_index]
+            self._result_buffer[self._result_index] = None
+            self._result_index += 1
+            if self._result_index == len(self._result_buffer):
+                self._result_buffer = None
+                self._result_index = 0
+            return result_row
         except EmptyResultError:
             raise StopIteration
 

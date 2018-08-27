@@ -213,7 +213,7 @@ def test_ngram_basic_longer_tf(dataset_num_files_1):
     fields = {
         -2: [TestSchema.id, TestSchema.id2, TestSchema.matrix],
         -1: [TestSchema.id, TestSchema.id2, TestSchema.image_png],
-        0: [TestSchema.id, TestSchema.id2, TestSchema.decimal],
+        0: [TestSchema.id, TestSchema.id2],
         1: [TestSchema.id, TestSchema.id2, TestSchema.sensor_name],
         2: [TestSchema.id, TestSchema.id2]
     }
@@ -225,7 +225,7 @@ def test_ngram_basic_longer(dataset_num_files_1):
     fields = {
         -2: [TestSchema.id, TestSchema.id2, TestSchema.matrix],
         -1: [TestSchema.id, TestSchema.id2, TestSchema.image_png],
-        0: [TestSchema.id, TestSchema.id2, TestSchema.decimal],
+        0: [TestSchema.id, TestSchema.id2],
         1: [TestSchema.id, TestSchema.id2, TestSchema.sensor_name],
         2: [TestSchema.id, TestSchema.id2]
     }
@@ -255,7 +255,7 @@ def test_ngram_basic_longer_shuffle_multi_partition_tf(synthetic_dataset):
     fields = {
         -2: [TestSchema.id, TestSchema.id2, TestSchema.matrix],
         -1: [TestSchema.id, TestSchema.id2, TestSchema.image_png],
-        0: [TestSchema.id, TestSchema.id2, TestSchema.decimal],
+        0: [TestSchema.id, TestSchema.id2],
         1: [TestSchema.id, TestSchema.id2, TestSchema.sensor_name],
         2: [TestSchema.id, TestSchema.id2]
     }
@@ -267,7 +267,7 @@ def test_ngram_basic_longer_shuffle_multi_partition(synthetic_dataset):
     fields = {
         -5: [TestSchema.id, TestSchema.id2, TestSchema.matrix],
         -4: [TestSchema.id, TestSchema.id2, TestSchema.image_png],
-        -3: [TestSchema.id, TestSchema.id2, TestSchema.decimal],
+        -3: [TestSchema.id, TestSchema.id2],
         -2: [TestSchema.id, TestSchema.id2, TestSchema.sensor_name],
         -1: [TestSchema.id, TestSchema.id2]
     }
@@ -478,7 +478,7 @@ def test_ngram_shuffle_drop_ratio(synthetic_dataset):
     fields = {
         -2: [TestSchema.id, TestSchema.id2, TestSchema.matrix],
         -1: [TestSchema.id, TestSchema.id2, TestSchema.image_png],
-        0: [TestSchema.id, TestSchema.id2, TestSchema.decimal],
+        0: [TestSchema.id, TestSchema.id2],
         1: [TestSchema.id, TestSchema.id2, TestSchema.sensor_name],
         2: [TestSchema.id, TestSchema.id2]
     }

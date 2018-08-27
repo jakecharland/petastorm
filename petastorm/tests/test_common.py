@@ -14,12 +14,11 @@
 
 from __future__ import division
 
-from decimal import Decimal
 from functools import partial
 
 import numpy as np
 from pyspark.sql import SparkSession
-from pyspark.sql.types import StringType, ShortType, LongType, DecimalType
+from pyspark.sql.types import StringType, ShortType, LongType
 
 from petastorm.codecs import CompressedImageCodec, NdarrayCodec, \
     ScalarCodec
@@ -37,7 +36,7 @@ TestSchema = Unischema('TestSchema', [
     UnischemaField('python_primitive_uint8', np.uint8, (), ScalarCodec(ShortType()), False),
     UnischemaField('image_png', np.uint8, _DEFAULT_IMAGE_SIZE, CompressedImageCodec('png'), False),
     UnischemaField('matrix', np.float32, _DEFAULT_IMAGE_SIZE, NdarrayCodec(), False),
-    UnischemaField('decimal', Decimal, (), ScalarCodec(DecimalType(10, 9)), False),
+    # UnischemaField('decimal', Decimal, (), ScalarCodec(DecimalType(10, 9)), False),
     UnischemaField('matrix_uint16', np.uint16, _DEFAULT_IMAGE_SIZE, NdarrayCodec(), False),
     UnischemaField('matrix_string', np.string_, (None,), NdarrayCodec(), False),
     UnischemaField('empty_matrix_string', np.string_, (None,), NdarrayCodec(), False),
@@ -55,7 +54,7 @@ def _randomize_row(id_num):
         TestSchema.python_primitive_uint8.name: np.random.randint(0, 255),
         TestSchema.image_png.name: np.random.randint(0, 255, _DEFAULT_IMAGE_SIZE).astype(np.uint8),
         TestSchema.matrix.name: np.random.randint(0, 255, _DEFAULT_IMAGE_SIZE).astype(np.float32),
-        TestSchema.decimal.name: Decimal(np.random.randint(0, 255) / Decimal(100)),
+        # TestSchema.decimal.name: Decimal(np.random.randint(0, 255) / Decimal(100)),
         TestSchema.matrix_uint16.name: np.random.randint(0, 255, _DEFAULT_IMAGE_SIZE).astype(np.uint16),
         TestSchema.matrix_string.name: np.random.randint(0, 100, (4,)).astype(np.string_),
         TestSchema.empty_matrix_string.name: np.asarray([], dtype=np.string_),

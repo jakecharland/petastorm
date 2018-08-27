@@ -18,6 +18,8 @@ storing numpy multidimensional arrays as well as compressed images into spark da
 NOTE: Due to the way unischema is stored alongside dataset (with pickling), changing any of these codecs class names
 and fields can result in reader breakages.
 """
+import decimal
+
 import cv2
 from io import BytesIO
 from abc import abstractmethod
@@ -147,7 +149,10 @@ class ScalarCodec(DataframeColumnCodec):
         return array
 
     def decode(self, unischema_field, value):
-        return unischema_field.numpy_dtype(value)
+        if isinstance(value, decimal.Decimal):
+            return str(value)
+        else:
+            return unischema_field.numpy_dtype(value)
 
     def spark_dtype(self):
         return self._spark_type
